@@ -25,41 +25,52 @@ for sign in operation:
         tokens.append(sign)
         
 #RPN
-for token in tokens:
-    if token.isdigit():
-        output.append(token)
-    elif token == '(':
-        stack.append(token)
-    elif token == ')':
-        while stack and stack[-1] != '(':
-            output.append(stack.pop())
-        stack.pop()
-    elif token in ['+', '-', '*', '/', 'M', '^']:
-        while stack and priority[stack[-1]] >= priority[token]:
-            output.append(stack.pop())
-        stack.append(token)
-while stack:
-    output.append(stack.pop())
+try:
+    for token in tokens:
+        if token.isdigit():
+            output.append(token)
+        elif token == '(':
+            stack.append(token)
+        elif token == ')':
+            while stack and stack[-1] != '(':
+                output.append(stack.pop())
+            stack.pop()
+        elif token in ['+', '-', '*', '/', 'M', '^']:
+            while stack and priority[stack[-1]] >= priority[token]:
+                output.append(stack.pop())
+            stack.append(token)
+    while stack:
+        output.append(stack.pop())
 
-print("RPN: ", output)
+    print("RPN: ", output)
 
-#RPN Evaluation
-for token in output:
-            if token in ["+", "-", "*", "/", "M", "^"]:
-                down = stack.pop()
-                top = stack.pop()
-                if token == "+":
-                    stack.append(top + down)
-                elif token == "-":
-                    stack.append(top - down)
-                elif token == "*":
-                    stack.append(top * down)
-                elif token == "/":
-                    stack.append(int(float(top) / down))
-                elif token == "M":
-                    stack.append(top % down)
-                elif token == "^":
-                    stack.append(top ** down)
-            else:
-                stack.append(int(token))
-print("Result:", stack[0])
+    stack = []
+    
+    #RPN Evaluation
+    for token in output:
+                if token in ["+", "-", "*", "/", "M", "^"]:
+                    down = stack.pop()
+                    top = stack.pop()
+                    if token == "+":
+                        stack.append(top + down)
+                    elif token == "-":
+                        stack.append(top - down)
+                    elif token == "*":
+                        stack.append(top * down)
+                    elif token == "/":
+                        stack.append(top / down)
+                    elif token == "M":
+                        stack.append(top % down)
+                    elif token == "^":
+                        stack.append(top ** down)
+                else:
+                    stack.append(float(token))
+    print("Result:", stack[0])
+except IndexError:
+    print("Error: Invalid expression syntax (missing numbers or operators)")
+except ZeroDivisionError:
+    print("Error: Division by zero is impossible")
+except ValueError:
+    print("Error: Invalid brackets configuration or symbols")
+except Exception:
+    print("Error: Something went wrong with your input.")
